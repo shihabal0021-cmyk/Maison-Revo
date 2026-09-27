@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maison Revo — Accessories</title>
+  <meta name="description" content="Maison Revo — premium accessories for him & her.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="announcement">FREE DELIVERY ON ORDERS OVER ৳1,500 • CASH ON DELIVERY AVAILABLE</div>
+
+  <header class="header">
+    <a class="brand" href="#"><span>MR</span><div>MAISON REVO<small>ACCESSORIES</small></div></a>
+    <nav>
+      <a href="#shop">Shop</a><a href="#about">About</a><a href="#contact">Contact</a>
+    </nav>
+    <button class="cart-btn" id="openCart" aria-label="Open cart">Bag <b id="cartCount">0</b></button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">FOR HIM ✦ FOR HER</p>
+        <h1>Accessories that<br><em>define</em> your style.</h1>
+        <p class="hero-copy">Curated rings, bracelets and earrings designed for everyday confidence.</p>
+        <a class="btn" href="#shop">SHOP COLLECTION</a>
+      </div>
+      <div class="hero-card">
+        <div class="hero-monogram">MR</div>
+        <p>MAISON REVO</p><span>EST. 2026</span>
+      </div>
+    </section>
+
+    <section class="section" id="shop">
+      <div class="section-head">
+        <div><p class="eyebrow">THE COLLECTION</p><h2>Shop our pieces</h2></div>
+        <div class="filters">
+          <button class="filter active" data-cat="All">All</button>
+          <button class="filter" data-cat="Rings">Rings</button>
+          <button class="filter" data-cat="Bracelets">Bracelets</button>
+          <button class="filter" data-cat="Earrings">Earrings</button>
+        </div>
+      </div>
+      <div class="products" id="products"></div>
+    </section>
+
+    <section class="feature" id="about">
+      <div><p class="eyebrow">MAISON REVO</p><h2>Minimal. Bold. Yours.</h2></div>
+      <p>Premium-looking accessories without the unnecessary markup. Built for Bangladeshi style, gifting and everyday wear.</p>
+    </section>
+
+    <section class="section contact" id="contact">
+      <p class="eyebrow">NEED HELP?</p><h2>Talk to us</h2>
+      <p>For sizing, bulk orders or product questions, message us directly.</p>
+      <a class="btn dark" href="https://m.me/" target="_blank">MESSAGE US</a>
+    </section>
+  </main>
+
+  <footer><strong>MAISON REVO</strong><span>© 2026 Maison Revo. All rights reserved.</span></footer>
+
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="cartDrawer">
+    <div class="drawer-head"><h2>Your Bag</h2><button id="closeCart">×</button></div>
+    <div id="cartItems" class="cart-items"></div>
+    <div class="cart-summary">
+      <div><span>Subtotal</span><strong id="subtotal">৳0</strong></div>
+      <small>Delivery charge is calculated at checkout.</small>
+      <button class="btn dark full" id="checkoutBtn">CHECKOUT</button>
+    </div>
+  </aside>
+
+  <div class="modal" id="checkoutModal">
+    <div class="modal-card">
+      <button class="modal-close" id="closeCheckout">×</button>
+      <p class="eyebrow">CHECKOUT</p><h2>Complete your order</h2>
+      <form id="orderForm">
+        <label>Name<input required name="name" placeholder="Your full name"></label>
+        <label>Phone<input required name="phone" inputmode="tel" placeholder="01XXXXXXXXX"></label>
+        <label>Address<textarea required name="address" placeholder="Full delivery address"></textarea></label>
+        <label>Payment
+          <select name="payment"><option>Cash on Delivery</option><option>bKash (manual confirmation)</option><option>Nagad (manual confirmation)</option></select>
+        </label>
+        <div class="order-total"><span>Total</span><strong id="checkoutTotal">৳0</strong></div>
+        <button class="btn dark full" type="submit">PLACE ORDER</button>
+        <p class="tiny">This starter version sends the order to WhatsApp. Connect a real payment gateway/backend before accepting online payments.</p>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

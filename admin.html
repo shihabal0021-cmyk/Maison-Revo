@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Maison Revo — Product Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f6f3ee;color:#171717;font-family:Inter,sans-serif}.wrap{max-width:1100px;margin:auto;padding:28px 18px 60px}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}.brand{font-family:"Cormorant Garamond",serif;font-size:34px;letter-spacing:.04em}.brand small{display:block;font:600 10px Inter;letter-spacing:.25em}.card{background:#fff;border:1px solid #e7e0d6;border-radius:18px;padding:22px;box-shadow:0 8px 30px #00000008;margin-bottom:20px}h1,h2{font-family:"Cormorant Garamond",serif;margin:0 0 8px}.muted{color:#777;font-size:13px}.login{max-width:420px;margin:12vh auto}.field{display:grid;gap:7px;margin:12px 0}.field input,.field select{width:100%;padding:13px;border:1px solid #d8d1c7;border-radius:10px;background:#fff;font:inherit}.btn{border:0;background:#171717;color:#fff;border-radius:10px;padding:13px 18px;font-weight:700;cursor:pointer}.btn.alt{background:#eee;color:#171717}.btn.danger{background:#a33}.hidden{display:none!important}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.preview{width:100%;height:260px;border:1px dashed #cfc6ba;border-radius:12px;display:grid;place-items:center;overflow:hidden;background:#faf9f7;color:#888}.preview img{width:100%;height:100%;object-fit:cover}.actions{display:flex;gap:10px;flex-wrap:wrap}.products{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}.product{border:1px solid #e7e0d6;border-radius:14px;overflow:hidden;background:#fff}.pic{height:220px;background:#f1eee8;display:grid;place-items:center;font-family:"Cormorant Garamond";font-size:48px}.pic img{width:100%;height:100%;object-fit:cover}.info{padding:14px}.info h3{margin:5px 0;font-family:"Cormorant Garamond";font-size:23px}.price{font-weight:700}.row{display:flex;justify-content:space-between;gap:10px;align-items:center}.notice{padding:10px 12px;border-radius:10px;background:#f0eadf;margin:12px 0;font-size:13px}label{font-size:13px;font-weight:600}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.preview{height:220px}}
+</style></head>
+<body>
+<div class="wrap">
+  <div id="login" class="card login">
+    <div class="brand">MAISON REVO<small>PRODUCT MANAGER</small></div><br>
+    <h2>Admin Login</h2><p class="muted">Use the ADMIN_PASSWORD you set in Netlify.</p>
+    <div class="field"><label>Password</label><input id="password" type="password" placeholder="Admin password"></div>
+    <button class="btn" id="loginBtn">LOGIN</button><div id="loginMsg" class="notice hidden"></div>
+  </div>
+
+  <div id="app" class="hidden">
+    <div class="top"><div><div class="brand">MAISON REVO<small>PRODUCT MANAGER</small></div></div><div class="actions"><a class="btn alt" href="/" target="_blank">VIEW STORE</a><button class="btn alt" id="logout">LOG OUT</button></div></div>
+    <div class="card"><div class="row"><div><h1 id="formTitle">Add Product</h1><p class="muted">Upload a photo, set name, category and price.</p></div></div>
+      <form id="productForm">
+        <input type="hidden" id="productId">
+        <div class="grid"><div>
+          <div class="field"><label>Product name</label><input id="name" required placeholder="Example: Silver Ring"></div>
+          <div class="field"><label>Category</label><select id="cat"><option>Rings</option><option>Bracelets</option><option>Earrings</option></select></div>
+          <div class="field"><label>Price (BDT)</label><input id="price" type="number" min="0" required placeholder="590"></div>
+          <div class="field"><label>Fallback code</label><input id="code" maxlength="8" placeholder="MR"></div>
+        </div><div>
+          <div class="field"><label>Product photo</label><input id="imageFile" type="file" accept="image/*"></div>
+          <div class="preview" id="preview">No image selected</div>
+        </div></div>
+        <div class="actions"><button class="btn" type="submit" id="saveBtn">SAVE PRODUCT</button><button class="btn alt" type="button" id="cancelBtn">CLEAR</button></div>
+        <div id="saveMsg" class="notice hidden"></div>
+      </form>
+    </div>
+    <div class="card"><div class="row"><div><h2>Products</h2><p class="muted">Changes are saved online and appear on the storefront.</p></div><button class="btn alt" id="refresh">REFRESH</button></div><br><div class="products" id="products"></div></div>
+  </div>
+</div>
+<script>
+let token='', products=[], imageData='';
+const $=s=>document.querySelector(s);
+function msg(el,text,show=true){el.textContent=text;el.classList.toggle('hidden',!show)}
+function money(n){return '৳'+Number(n).toLocaleString('en-BD')}
+function auth(){return {'Authorization':'Bearer '+token,'Content-Type':'application/json'}}
+async function load(){const r=await fetch('/api/products');if(!r.ok)throw Error('Could not load products');products=await r.json();render()}
+function render(){
+ $('#products').innerHTML=products.map(p=>`<article class="product"><div class="pic">${p.image?`<img src="${p.image}" alt="">`:`${p.code||'MR'}`}</div><div class="info"><div class="muted">${p.cat}</div><h3>${esc(p.name)}</h3><div class="row"><span class="price">${money(p.price)}</span><div class="actions"><button class="btn alt" onclick="editProduct(${p.id})">EDIT</button><button class="btn danger" onclick="deleteProduct(${p.id})">DELETE</button></div></div></div></article>`).join('')||'<p class="muted">No products yet.</p>';
+}
+function esc(s){return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
+function editProduct(id){const p=products.find(x=>x.id===id);if(!p)return;$('#productId').value=p.id;$('#name').value=p.name;$('#cat').value=p.cat;$('#price').value=p.price;$('#code').value=p.code||'MR';imageData=p.image||'';$('#preview').innerHTML=imageData?`<img src="${imageData}" alt="">`:'No image selected';$('#formTitle').textContent='Edit Product';window.scrollTo({top:0,behavior:'smooth'})}
+function clearForm(){$('#productForm').reset();$('#productId').value='';imageData='';$('#preview').textContent='No image selected';$('#formTitle').textContent='Add Product';msg($('#saveMsg'),' ',false)}
+$('#imageFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const max=1000,scale=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext('2d').drawImage(img,0,0,c.width,c.height);imageData=c.toDataURL('image/webp',0.82);$('#preview').innerHTML=`<img src="${imageData}" alt="">`};img.src=reader.result};reader.readAsDataURL(f)};
+$('#productForm').onsubmit=async e=>{e.preventDefault();msg($('#saveMsg'),'Saving...');const payload={id:Number($('#productId').value)||Date.now(),name:$('#name').value,cat:$('#cat').value,price:Number($('#price').value),code:$('#code').value||'MR',image:imageData};try{const r=await fetch('/api/products',{method:'POST',headers:auth(),body:JSON.stringify(payload)});const data=await r.json();if(!r.ok)throw Error(data.error||'Save failed');await load();clearForm();msg($('#saveMsg'),'Product saved successfully.');}catch(err){msg($('#saveMsg'),err.message)}};
+async function deleteProduct(id){if(!confirm('Delete this product?'))return;const r=await fetch('/api/products?id='+id,{method:'DELETE',headers:auth()});if(!r.ok){const d=await r.json();return alert(d.error||'Delete failed')}await load()}
+$('#loginBtn').onclick=async()=>{token=$('#password').value;try{const r=await fetch('/api/products?admin=1',{headers:{'Authorization':'Bearer '+token}});let data={};try{data=await r.json()}catch{}if(!r.ok)throw Error(data.error||`Product API returned ${r.status}`);await load();$('#login').classList.add('hidden');$('#app').classList.remove('hidden')}catch(err){msg($('#loginMsg'),err?.message||'Could not connect to the product API.')}};
+$('#logout').onclick=()=>{token='';location.reload()};$('#cancelBtn').onclick=clearForm;$('#refresh').onclick=load;
+</script></body></html>
